@@ -1,0 +1,7 @@
+[user]
+	email = REDACTED
+	name = REDACTED
+[gui]
+	recentrepo = C:/Users/samer/Development/docker-test
+[credential "https://git.hhu.de"]
+	provider = generic
