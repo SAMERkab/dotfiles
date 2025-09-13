@@ -1,0 +1,3 @@
+{{ range $name, $value := .environment_variables -}}
+[Environment]::SetEnvironmentVariable("{{ $name }}", "{{ $value }}", [System.EnvironmentVariableTarget]::User)
+{{ end }}

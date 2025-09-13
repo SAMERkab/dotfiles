@@ -1,0 +1,9 @@
+environment_variables:
+  EDITOR: nvim
+  SHELL: pwsh
+  MYSHELL: pwsh
+  XDG_CONFIG_HOME: $HOME/.config
+testlist: 
+  - one
+  - two
+  - three
