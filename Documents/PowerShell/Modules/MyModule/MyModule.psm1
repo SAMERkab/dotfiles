@@ -1,13 +1,19 @@
-$env:EDITOR = "nvim"
-$env:SHELL = "pwsh"
-$env:MYSHELL = "pwsh"
-$env:NOTES = "~\Desktop\notes\"
+#Get-Content .env | foreach {
+#  $name, $value = $_.split('=')
+#  if ([string]::IsNullOrWhiteSpace($name) -or $name.Contains('#')) {
+#    # skip empty or comment line in ENV file
+#    return
+#  }
+#  Set-Content env:\$name $value
+#}
 
-Set-Alias less "C:\Program Files\Git\usr\bin\less.exe"
-Set-Alias edit $env:EDITOR
-Set-Alias to150dpi Optimize-PdfSize
+function Get-Tags {
+	Get-ChildItem -Name | Select-String '#\w+' -AllMatches | Select-Object -ExpandProperty Matches | Select-Object Value -Unique 
+}
 
-
+function Search-EnvironmentVariables {
+  ls env: | oss -Width 9999 | fzf --print-query | Out-String | %{ $res = $_ -split "`r`n"; Select-String -InputObject $res[1] -AllMatches -Pattern $res[0]}
+}
 
 function Optimize-PdfSize {
   [CmdletBinding(PositionalBinding=$false)]
@@ -203,8 +209,5 @@ function toPdfsHere {
   Get-ChildItem $in -File -Recurse -Exclude _* | ForEach-Object { GoodPdf $_ .\$((Get-Item $_).Name).pdf; Move-Item -Path $_ -Destination $($_.Directory)\_$($_.Name) }
 }
 
-
-
-Invoke-Expression ((chezmoi completion powershell) -join "`n")
-
+Set-Alias to150dpi Optimize-PdfSize
 
