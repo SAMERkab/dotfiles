@@ -3,7 +3,9 @@ environment_variables:
   GIT_EDITOR: nvim
   SHELL: pwsh
   MYSHELL: pwsh
-  XDG_CONFIG_HOME: $HOME/.config
+  NOTES: "[$HOME/Desktop/notes]"
+  VAULT: "[$HOME/Desktop/files]"
+  XDG_CONFIG_HOME: "[$HOME/.config]"
   
 testlist: 
   - one
