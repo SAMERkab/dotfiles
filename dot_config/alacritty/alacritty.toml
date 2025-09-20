@@ -1,0 +1,20 @@
+[general]
+import = [
+	"~/.config/alacritty/themes/themes/argonaut.toml"
+]
+
+[window]
+decorations = "None" # Full
+opacity = 0.88
+startup_mode = "Windowed" # Maximized Fullscreen
+padding = { x = 5, y = 5 }
+dynamic_padding = true
+
+[terminal]
+shell.program = "pwsh"
+
+[keyboard]
+bindings = [
+	{ key = "N", mods = "Control|Shift", action = "CreateNewWindow" },
+	#{ key = "L", mods = "Control|Shift", chars = "l" },
+]

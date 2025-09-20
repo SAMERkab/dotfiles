@@ -1,0 +1,6 @@
+{{ $ALACRITTY_THEMES_DIR := (joinPath (env "XDG_CONFIG_HOME") "alacritty" "themes") -}}
+{{ if not (stat $ALACRITTY_THEMES_DIR) -}}
+mkdir {{ $ALACRITTY_THEMES_DIR }}
+git clone https://github.com/alacritty/alacritty-theme {{ $ALACRITTY_THEMES_DIR }}
+{{ end }}
+
