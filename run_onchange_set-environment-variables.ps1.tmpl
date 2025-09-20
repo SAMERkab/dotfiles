@@ -1,15 +1,17 @@
 $vars = @{
 	{{ range $name, $value := .environment_variables -}}
-	"{{ $name }}" = "{{ $value }}"
+	'{{ $name }}' = '{{ $value }}'
 	{{ end -}}
 }
 
 foreach ($name in $vars.keys) {
 	$value = $vars[$name]
 	
-	if ($value -match "\[(.*)\]") {
+	if ($value -match '\[(.*)\]') {
 		$value = Resolve-Path $Matches[1]
+		$value = $value -replace '\\', '/'
 	}
+
 	Write-Output "Setting $name to $value"
 	[Environment]::SetEnvironmentVariable("$name", "$value", [System.EnvironmentVariableTarget]::User)
 }

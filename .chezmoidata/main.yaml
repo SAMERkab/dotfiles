@@ -1,13 +1,10 @@
 environment_variables:
   EDITOR: nvim
+  VISUAL: nvim
   GIT_EDITOR: nvim
   SHELL: pwsh
   MYSHELL: pwsh
-  NOTES: "[$HOME/Desktop/notes]"
-  VAULT: "[$HOME/Desktop/files]"
-  XDG_CONFIG_HOME: "[$HOME/.config]"
+  NOTES: "[~/Desktop/notes]"
+  VAULT: "[~/Desktop/files]"
+  XDG_CONFIG_HOME: "[~/.config]"
   
-testlist: 
-  - one
-  - two
-  - three
