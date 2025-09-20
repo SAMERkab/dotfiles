@@ -7,12 +7,25 @@
 #  Set-Content env:\$name $value
 #}
 
+function which ($command) { 
+    Get-Command -Name $command -ErrorAction SilentlyContinue | 
+    Select-Object -ExpandProperty Path -ErrorAction SilentlyContinue 
+}
+
 function Get-Tags {
 	Get-ChildItem -Name | Select-String '#\w+' -AllMatches | Select-Object -ExpandProperty Matches | Select-Object Value -Unique 
 }
 
 function Search-EnvironmentVariables {
-  ls env: | oss -Width 9999 | fzf --print-query | Out-String | %{ $res = $_ -split "`r`n"; Select-String -InputObject $res[1] -AllMatches -Pattern $res[0]}
+    $didGetQuery = $false
+    ls env: | oss -Width 9999 | fzf -m --print-query | %{
+        if ($didGetQuery) {
+            Select-String -InputObject $_ -AllMatches -Pattern $query
+        } else {
+            $query = $_
+            $didGetQuery = $true
+        }
+    }
 }
 
 function Optimize-PdfSize {
