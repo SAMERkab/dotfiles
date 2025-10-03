@@ -2,6 +2,7 @@
 # Import-Module PSFzf
 
 [Console]::InputEncoding = [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 
 $env:MY_MODULE = "$(Split-Path $PROFILE)\Modules\MyModule\MyModule.psm1"
 

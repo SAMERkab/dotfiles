@@ -1,6 +1,6 @@
 [general]
 import = [
-	"~/.config/alacritty/themes/themes/argonaut.toml"
+	"~/.config/alacritty/themes/themes/xterm.toml"
 ]
 
 [window]
@@ -11,7 +11,7 @@ padding = { x = 5, y = 5 }
 dynamic_padding = true
 
 [terminal]
-shell.program = "pwsh"
+shell.program = "{{ env "SHELL" -}}"
 
 [keyboard]
 bindings = [

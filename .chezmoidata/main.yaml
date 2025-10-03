@@ -3,7 +3,7 @@ environment_variables:
   VISUAL: nvim
   GIT_EDITOR: nvim
   SHELL: pwsh
-  MYSHELL: pwsh
+  MY_SHELL: pwsh
   NOTES: "[~/Desktop/notes]"
   VAULT: "[~/Desktop/files]"
   XDG_CONFIG_HOME: "[~/.config]"

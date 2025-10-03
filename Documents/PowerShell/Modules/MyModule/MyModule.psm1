@@ -18,7 +18,7 @@ function Get-Tags {
 
 function Search-EnvironmentVariables {
     $didGetQuery = $false
-    ls env: | oss -Width 9999 | fzf -m --print-query | %{
+    Get-ChildItem env: | oss -Width 9999 | fzf -m --print-query | ForEach-Object {
         if ($didGetQuery) {
             Select-String -InputObject $_ -AllMatches -Pattern $query
         } else {
@@ -26,6 +26,21 @@ function Search-EnvironmentVariables {
             $didGetQuery = $true
         }
     }
+}
+
+function Set-AlacrittyTheme {
+  param(
+    [ArgumentCompleter(
+      {
+        param($cmd, $param, $wordToComplete)
+        [array] $validValues = Get-ChildItem "$env:XDG_CONFIG_HOME\alacritty\themes\themes" | Select-Object -ExpandProperty BaseName
+        $validValues -like "$wordToComplete*"
+      }
+    )]
+    $name
+  ) 
+
+  nvim --headless +"%s/\v(theme.{-})([^\/]+).toml/\1$name.toml/" +"wq" $env:XDG_CONFIG_HOME\alacritty\alacritty.toml
 }
 
 function Optimize-PdfSize {
