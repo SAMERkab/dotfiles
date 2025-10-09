@@ -3,15 +3,15 @@ local config = wezterm.config_builder()
 
 -- set initial position
 wezterm.on('gui-startup', function(cmd) 
-  local tab, pane, window = wezterm.mux.spawn_window(cmd or {position={x=0, y=0}})
+  local tab, pane, window = wezterm.mux.spawn_window(cmd or {position={x=-5, y=-2}})
 end)
 config.initial_rows = 15
-config.initial_cols = 157
+config.initial_cols = 172
 config.window_decorations = "RESIZE"
 
 config.default_prog = { "{{ env "SHELL" -}}" }
 
-config.font_size = 13
+config.font_size = 12
 config.font = wezterm.font("Consolas", { weight = "Bold" }) -- "JetBrains Mono"
 config.color_scheme = "Afterglow (Gogh)"
 
