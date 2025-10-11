@@ -12,6 +12,25 @@ function which ($command) {
     Select-Object -ExpandProperty Path -ErrorAction SilentlyContinue 
 }
 
+function config { 
+  param(
+    [ArgumentCompleter(
+      {
+        param($cmd, $param, $wordToComplete)
+        [array] $validValues = Get-ChildItem "$env:XDG_CONFIG_HOME" | Select-Object -ExpandProperty BaseName
+        $validValues -like "$wordToComplete*"
+      }
+    )]
+    $name
+  )
+  $configFiles = Get-ChildItem $env:XDG_DATA_HOME/chezmoi/dot_config/$name
+  if (($configFiles | Measure-Object).Count -eq 1) {
+    edit $configFiles.FullName
+  } else {
+    edit $env:XDG_DATA_HOME/chezmoi/dot_config/$name
+  }
+}
+
 function Get-Tags {
 	Get-ChildItem -Name | Select-String '#\w+' -AllMatches | Select-Object -ExpandProperty Matches | Select-Object Value -Unique 
 }
