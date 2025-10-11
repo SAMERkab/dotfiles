@@ -8,11 +8,17 @@ end)
 config.initial_rows = 15
 config.initial_cols = 172
 config.window_decorations = "RESIZE"
+config.window_padding = {
+  left = 8,
+  right = 0,
+  top = 6,
+  bottom = 0,
+}
 
 config.default_prog = { "{{ env "SHELL" -}}" }
 
 config.font_size = 12
-config.font = wezterm.font("Consolas", { weight = "Bold" }) -- "JetBrains Mono"
+config.font = wezterm.font("FiraCode Nerd Font"--[[ , { weight = "Bold" } ]]) -- Consolas | JetBrains Mono
 config.color_scheme = "Afterglow (Gogh)"
 
 local env_color_scheme = os.getenv("MY_THEME")

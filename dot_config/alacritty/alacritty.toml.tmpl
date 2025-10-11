@@ -13,6 +13,11 @@ dynamic_padding = true
 [terminal]
 shell.program = "{{ env "SHELL" -}}"
 
+[font]
+size = 12
+normal.family = "FiraCode Nerd Font Mono" -- the non-Mono version (FiraCode Nerd Font) doesn't work in Alacritty
+normal.style = "Regular"
+
 [keyboard]
 bindings = [
 	{ key = "N", mods = "Control|Shift", action = "CreateNewWindow" },
