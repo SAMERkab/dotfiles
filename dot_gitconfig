@@ -1,5 +1,9 @@
 [user]
 	email = REDACTED
 	name = REDACTED
+
 [credential "https://git.hhu.de"]
 	provider = generic
+
+[commit]
+  verbose = true
