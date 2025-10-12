@@ -17,17 +17,19 @@ function config {
     [ArgumentCompleter(
       {
         param($cmd, $param, $wordToComplete)
-        [array] $validValues = Get-ChildItem "$env:XDG_CONFIG_HOME" | Select-Object -ExpandProperty BaseName
+        [array] $validValues = Get-ChildItem "$env:XDG_DATA_HOME/chezmoi/dot_config" | Select-Object -ExpandProperty BaseName
         $validValues -like "$wordToComplete*"
       }
     )]
     $name
   )
   $configFiles = Get-ChildItem $env:XDG_DATA_HOME/chezmoi/dot_config/$name
-  if (($configFiles | Measure-Object).Count -eq 1) {
-    edit $configFiles.FullName
-  } else {
-    edit $env:XDG_DATA_HOME/chezmoi/dot_config/$name
+  if ($configFiles) {
+    if ($configFiles.Count -eq 1) {
+      edit $configFiles[0].FullName
+    } else {
+      edit $configFiles[0].Parent.FullName
+    }
   }
 }
 
