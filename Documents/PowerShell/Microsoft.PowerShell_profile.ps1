@@ -12,5 +12,9 @@ Set-Alias edit $env:EDITOR
 Set-PSReadLineOption -EditMode Vi
 Set-PSReadLineKeyHandler -Chord Alt+e -Function ViEditVisually
 
-Invoke-Expression ((chezmoi completion powershell) -join "`n")
+# Invoke-Expression ((chezmoi completion powershell) -join "`n") # This is covered by Carapace
 
+$env:CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
+Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
+Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+carapace _carapace | Out-String | Invoke-Expression
