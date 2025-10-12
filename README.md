@@ -1,3 +1,4 @@
+## Lua
 Install luarocks and lua5.1:
 ```pwsh
 Invoke-WebRequest https://luarocks.github.io/luarocks/releases/luarocks-3.12.2-win32.zip -OutFile ~/Downloads/luarocks-3.12.2-win32.zip
@@ -55,4 +56,9 @@ System rocktree
 
 Note that the %APPDATA% element in the paths above is user specific and it MUST be replaced by its actual value.
 For the current user that value is: C:\Users\samer\AppData\Roaming.
+```
+
+## yq
+```pwsh
+Invoke-WebRequest https://github.com/mikefarah/yq/releases/latest/download/yq_windows_amd64.exe -OutFile $env:XDG_DATA_HOME/../bin/yq.exe
 ```
