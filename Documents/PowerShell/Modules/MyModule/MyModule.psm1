@@ -33,6 +33,21 @@ function config {
   }
 }
 
+# Chezmoi edit
+function ce {
+  edit (fzf --walker-root $env:XDG_DATA_HOME/chezmoi)
+}
+
+# Chezmoi status
+function cs {
+  chezmoi diff
+  chezmoi status
+}
+
+function ca {
+  chezmoi apply
+}
+
 function Get-Tags {
 	Get-ChildItem -Name | Select-String '#\w+' -AllMatches | Select-Object -ExpandProperty Matches | Select-Object Value -Unique 
 }
