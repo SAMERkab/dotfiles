@@ -1,4 +1,13 @@
-## Lua
+## Windows
+
+### scoop
+```pwsh
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+```
+Note: install all dev tools using scoop instead of manual installation
+
+### Lua
 Install luarocks and lua5.1:
 ```pwsh
 Invoke-WebRequest https://luarocks.github.io/luarocks/releases/luarocks-3.12.2-win32.zip -OutFile ~/Downloads/luarocks-3.12.2-win32.zip
@@ -58,7 +67,7 @@ Note that the %APPDATA% element in the paths above is user specific and it MUST 
 For the current user that value is: C:\Users\samer\AppData\Roaming.
 ```
 
-## yq
+### yq
 ```pwsh
 Invoke-WebRequest https://github.com/mikefarah/yq/releases/latest/download/yq_windows_amd64.exe -OutFile $env:XDG_DATA_HOME/../bin/yq.exe
 ```
