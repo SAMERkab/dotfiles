@@ -1,0 +1,18 @@
+{{ writeToStdout "Generating chezmoi config at " (joinPath (env "XDG_CONFIG_HOME") "chezmoi" "chezmoi.yaml") "..." -}}
+{{ $email := promptStringOnce . "email" "What is your email" -}}
+{{ $username := promptStringOnce . "username" "What is your username" -}}
+
+keepassxc:
+    database: "~/.local/share/keepassxc/bitwarden-backup.kdbx"
+
+data:
+    email: {{ $email | quote }}
+    username: {{ $username | quote }}
+    password_manager_identity_entry: Chezmoi Identity
+    identity_email_field: identity_email
+
+interpreters:
+    ps1:
+        command: "pwsh"
+        args: ["-NoLogo"]
+

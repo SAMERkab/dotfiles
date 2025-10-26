@@ -1,0 +1,11 @@
+[user]
+	email = {{ .email | quote }} {{/* keepassxcAttribute .password_manager_identity_entry .identity_email_field | quote */}}
+	name = {{ .username | quote }}
+
+[commit]
+	verbose = true
+
+[alias]
+	df = diff --ignore-all-space --color-words
+	l = log --graph --decorate --pretty=oneline --abbrev-commit
+	s = status --short
