@@ -48,6 +48,18 @@ function ca {
   chezmoi apply
 }
 
+function git-status-all {
+  fd --prune --hidden --type directory --glob .git --exclude '{AppData,scoop,nvim-data}' --absolute-path  | % {
+    $git_status = git -C "$_/.." s
+    if (-not [string]::IsNullOrWhiteSpace($git_status)) {
+      echo "$_ status:"
+      git -C "$_/.." s
+      echo "------------------"
+      echo ""
+    }
+  }
+}
+
 function Get-Tags {
 	Get-ChildItem -Name | Select-String '#\w+' -AllMatches | Select-Object -ExpandProperty Matches | Select-Object Value -Unique 
 }
