@@ -60,8 +60,45 @@ function git-status-all {
   }
 }
 
+function generate-filename($path, $default_date, $default_title, $default_price, $default_tags, $ext) {
+  $data = rga -r '$1' --json --max-count 1 "^Page \d+:\s*([0-9.,]+) Euro\s*$" $path
+
+  $price = $data | yq -p json 'select(.type == "match") | .data.submatches[0].replacement.text' | wsl tr -d '.' | wsl tr ',' '.'
+  if ($price) {
+    $price = "€$price"
+  } else {
+    $price = $default_price
+    $tags += ' noocr'
+  }
+
+  if ($default_date) {
+    $date = $default_date
+  } else {
+    $date = wsl date +%F
+  }
+
+  if ($env:TITLE_REGEX) {
+    $title = rga -r '$1' --only-matching --max-count 1 $env:TITLE_REGEX $path
+  } else {
+    $title = $default_title
+  }
+
+  $tags += " $default_tags"
+
+  $date = (Get-Item $path).BaseName
+  echo "$date $title $price --$tags$ext"
+}
+
+function Search-History {
+  cat "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" | fzf
+}
+
 function Get-Tags {
 	Get-ChildItem -Name | Select-String '#\w+' -AllMatches | Select-Object -ExpandProperty Matches | Select-Object Value -Unique 
+}
+
+function Get-TagsFromMetadata {
+  cat $env:VAULT/.metadata.yaml | yq '.* | . as $entry | .values | keys[] | ($entry.display_name)+(.)'
 }
 
 function Search-EnvironmentVariables {
@@ -270,19 +307,23 @@ function GoodPdf {
   param(
     $in, $out
   )
-  Optimize-PdfSize -Grayscale -OCR deu -Paper A4 -Compression ZIP -DPI 300 -Path $in  -Output $out 
+  Optimize-PdfSize -Grayscale -OCR deu -Paper A4 -Compression ZIP -DPI 300 -Path $in -Output $out
 }
 
 function SmallPdf {
   param(
     $in, $out
   )
-  Optimize-PdfSize -Grayscale -OCR deu -Paper A4 -Compression ZIP -DPI 300 -Path $in  -Output $out 
+  Optimize-PdfSize -Grayscale -OCR deu -Paper A4 -Compression JPEG -DPI 150 -Path $in -Output $out
 }
 
 function toPdfsHere {
   param($in)
-  Get-ChildItem $in -File -Recurse -Exclude _* | ForEach-Object { GoodPdf $_ .\$((Get-Item $_).Name).pdf; Move-Item -Path $_ -Destination $($_.Directory)\_$($_.Name) }
+  $files = Get-ChildItem $in -File -Recurse -Exclude _*
+  foreach ($file in $files) {
+    GoodPdf $file.FullName ".\$($file.BaseName).pdf"
+  }
+# Move-Item -Path "$($_.FullName)" -Destination "$($_.DirectoryName)\_$($_.Name)"
 }
 
 Set-Alias to150dpi Optimize-PdfSize
