@@ -1,6 +1,6 @@
-{{ range $display_name, $data := .users -}}
-[includeIf "gitdir:~/Development/{{ $display_name }}/"]
-	path = ~/Development/{{ $display_name }}/.gitconfig
+{{ range .profiles -}}
+[includeIf "gitdir:~/Development/{{ .username }}/"]
+	path = ~/Development/{{ .username }}/.gitconfig
 {{ end }}
 
 [commit]

@@ -1,28 +1,75 @@
-{{ writeToStdout "Generating chezmoi config at " (joinPath (env "XDG_CONFIG_HOME") "chezmoi" "chezmoi.yaml") "...\n" -}}
-{{ writeToStdout "If setting up multiple users, enter a comma separated list of their display names (The first one will be the main user).\n" -}}
+{{- define "user_select_profile" -}}
+  {{- $profile_numbers := list -}}
+  {{- range $i, $p := .profiles -}}
+    {{- writeToStdout (print (add $i 1) ": " $p.username) "\n" -}}
+    {{- $profile_numbers = append $profile_numbers (add $i 1) -}}
+  {{- else -}}
+    {{- writeToStdout "You didn't configure any profiles.\n" -}}
+  {{- end -}}
+  {{- $profile_numbers = append $profile_numbers "go back" -}}
+  {{- $chosen_number := promptChoice "Which profile" $profile_numbers -}}
+  {{- if eq $chosen_number "go back" -}}
+    {{- $_ := set . "return" dict -}}
+  {{- else -}}
+    {{- $_ := set . "return" (index .profiles (sub $chosen_number 1)) -}}
+  {{- end -}}
+{{- end -}}
 
 
-{{ $users_raw_list := promptStringOnce . "users_raw_list" "Display name(s)" -}}
-{{ $users := default (dict) (get $ "users") -}}
-{{ range regexSplit `\s*,\s*` $users_raw_list -1 -}}
-  {{ $user := default (dict) (get $users .) -}}
-  {{ $_ := set $user "username" (promptStringOnce $ (print "users_" . "_username") (print "Username of " .)) -}}
-  {{ $_ := set $user "email" (promptStringOnce $ (print "users_" . "_email") (print "Email of " .)) -}}
-  {{ $_ := set $users . $user -}}
-{{ end -}}
-{{ $_ := set $ "main_user" (get $users (regexSplit `\s*,\s*` $users_raw_list -1 | first )) -}}
+{{- writeToStdout "Generating chezmoi config at " (joinPath (env "XDG_CONFIG_HOME") "chezmoi" "chezmoi.yaml") "...\n" -}}
 
-{{ $vault := osClean (promptStringOnce $ "vault_path" "Absolute path to the Vault") -}}
+{{- $profiles := default (list) (get $ "profiles") -}}
+{{- $commands := (list "add new profile" "edit a profile" "delete a profile" "continue") -}}
+
+{{- range 1000 -}}
+  {{/* writeToStdout "Existing profiles:\n" */}}
+  {{- $command := promptChoice "What do you want to do" $commands -}}
+  {{- $profile := dict -}}
+
+  {{- if eq $command "add new profile" -}}
+    {{- writeToStdout "Creating a new profile...\n" -}}
+    {{- $profiles = append $profiles $profile -}}
+  {{- else if eq $command "continue" -}}
+    {{- break -}}
+  {{- else if eq $command "delete a profile" -}}
+    {{- $template_args := dict "profiles" $profiles -}}
+    {{- template "user_select_profile" $template_args -}}
+    {{- if empty $template_args.return -}}
+      {{- continue -}}
+    {{- else -}}
+      {{- $profiles = without $profiles $template_args.return -}}
+      {{- writeToStdout "Profile deleted.\n" -}}
+    {{- end -}}
+    {{- continue -}}
+  {{- else if eq "edit a profile" $command -}}
+    {{- $template_args := dict "profiles" $profiles -}}
+    {{- template "user_select_profile" $template_args -}}
+    {{- if empty $template_args.return -}}
+      {{- continue -}}
+    {{- else -}}
+      {{- $profile = $template_args.return -}}
+      {{- writeToStdout "Editing the following profile: \n" (toYaml $profile) -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $_ := set $profile "username" (promptString "Username") -}}
+  {{- $_ := set $profile "full_name" (promptString "Full name") -}}
+  {{- $_ := set $profile "email" (promptString "Email") -}}
+
+  {{- writeToStdout "Done.\n" -}}
+{{- end -}}
+
+{{- $vault := osClean (promptStringOnce $.env "VAULT" "Absolute path to the Vault") }}
 
 keepassxc:
   database: {{ joinPath $vault "/data/keepassxc/database.kdbx" | quote }}
 
 data:
-  users:
-{{- range $display_name, $data := $users }}
-    {{ $display_name }}:
-      username: {{ $data.username | quote }}
-      email: {{ $data.email | quote }}
+  profiles:
+{{- range $profiles }}
+    - username: {{ .username | quote }}
+      full_name: {{ .full_name | quote }}
+      email: {{ .email | quote }}
 {{- end }}
   password_manager_identity_entry: Chezmoi Identity
   identity_email_field: identity_email
@@ -31,11 +78,10 @@ data:
     VAULT: {{ $vault }}
     NOTES: {{ joinPath $vault "notes" }}
 
-interpreters:
+interpreters: ## Windows only
   ps1:
     command: "pwsh"
     args: ["-NoLogo"]
-  sh: ## Because the following only applies to windows, you can use ".sh" to make cross-platform shell scripts
-    command: "pwsh"
-    args: ["-NoLogo", "-CommandWithArgs", "Invoke-Command -ScriptBlock ([ScriptBlock]::Create((Get-Content $args)))"]
+  sh:
+    command: "C:/Program Files/Git/bin/sh.exe"
 
