@@ -1,0 +1,4 @@
+
+[user]
+	name = {{ .username | quote }}
+	email = {{ .email | quote }} {{/* keepassxcAttribute .password_manager_identity_entry .identity_email_field | quote */}}

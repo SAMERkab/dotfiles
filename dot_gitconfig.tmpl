@@ -1,6 +1,7 @@
-[user]
-	email = {{ .email | quote }} {{/* keepassxcAttribute .password_manager_identity_entry .identity_email_field | quote */}}
-	name = {{ .username | quote }}
+{{ range $display_name, $data := .users -}}
+[includeIf "gitdir:~/Development/{{ $display_name }}/"]
+	path = ~/Development/{{ $display_name }}/.gitconfig
+{{ end }}
 
 [commit]
 	verbose = true
@@ -9,3 +10,6 @@
 	df = diff --ignore-all-space --color-words
 	l = log --graph --decorate --pretty=oneline --abbrev-commit
 	s = status --short
+
+[credential "https://codeberg.org"]
+	provider = generic

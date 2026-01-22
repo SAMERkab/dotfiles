@@ -5,8 +5,8 @@ environment_variables:
   SHELL: pwsh
   MY_SHELL: pwsh
   HOME: "[~]"
-  NOTES: "[~/Desktop/notes]"
-  VAULT: "x:/Vault/files"
+  NOTES: "[~/Vault/notes]"
+  VAULT: "[~/Vault/files]"
   XDG_CONFIG_HOME: "[~/.config]"
   XDG_DATA_HOME: "[~/.local/share]"
 add_to_path:

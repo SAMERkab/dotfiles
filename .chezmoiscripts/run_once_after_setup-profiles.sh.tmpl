@@ -1,0 +1,11 @@
+{{ range $display_name, $data := .users -}}
+  {{ $dev_directory := joinPath (toString $.chezmoi.destDir) "Development" $display_name -}}
+  {{ $dot_gitconfig := joinPath $dev_directory ".gitconfig" -}}
+  {{ if not (stat $dev_directory) -}}
+mkdir '{{ $dev_directory }}'
+  {{ end -}}
+  {{ if not (stat $dot_gitconfig) -}}
+echo '{{ template "profile/dot_gitconfig" $data }}' >> '{{ $dot_gitconfig }}'
+  {{ end }}
+{{ end -}}
+

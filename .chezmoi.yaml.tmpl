@@ -1,18 +1,41 @@
-{{ writeToStdout "Generating chezmoi config at " (joinPath (env "XDG_CONFIG_HOME") "chezmoi" "chezmoi.yaml") "..." -}}
-{{ $email := promptStringOnce . "email" "What is your email" -}}
-{{ $username := promptStringOnce . "username" "What is your username" -}}
+{{ writeToStdout "Generating chezmoi config at " (joinPath (env "XDG_CONFIG_HOME") "chezmoi" "chezmoi.yaml") "...\n" -}}
+{{ writeToStdout "If setting up multiple users, enter a comma separated list of their display names (The first one will be the main user).\n" -}}
+
+
+{{ $users_raw_list := promptStringOnce . "users_raw_list" "Display name(s)" -}}
+{{ $users := default (dict) (get $ "users") -}}
+{{ range regexSplit `\s*,\s*` $users_raw_list -1 -}}
+  {{ $user := default (dict) (get $users .) -}}
+  {{ $_ := set $user "username" (promptStringOnce $ (print "users_" . "_username") (print "Username of " .)) -}}
+  {{ $_ := set $user "email" (promptStringOnce $ (print "users_" . "_email") (print "Email of " .)) -}}
+  {{ $_ := set $users . $user -}}
+{{ end -}}
+{{ $_ := set $ "main_user" (get $users (regexSplit `\s*,\s*` $users_raw_list -1 | first )) -}}
+
+{{ $vault := osClean (promptStringOnce $ "vault_path" "Absolute path to the Vault") -}}
 
 keepassxc:
-    database: "~/.local/share/keepassxc/bitwarden-backup.kdbx"
+  database: {{ joinPath $vault "/data/keepassxc/database.kdbx" | quote }}
 
 data:
-    email: {{ $email | quote }}
-    username: {{ $username | quote }}
-    password_manager_identity_entry: Chezmoi Identity
-    identity_email_field: identity_email
+  users:
+{{- range $display_name, $data := $users }}
+    {{ $display_name }}:
+      username: {{ $data.username | quote }}
+      email: {{ $data.email | quote }}
+{{- end }}
+  password_manager_identity_entry: Chezmoi Identity
+  identity_email_field: identity_email
+  env:
+    EDITOR: nvim
+    VAULT: {{ $vault }}
+    NOTES: {{ joinPath $vault "notes" }}
 
 interpreters:
-    ps1:
-        command: "pwsh"
-        args: ["-NoLogo"]
+  ps1:
+    command: "pwsh"
+    args: ["-NoLogo"]
+  sh: ## Because the following only applies to windows, you can use ".sh" to make cross-platform shell scripts
+    command: "pwsh"
+    args: ["-NoLogo", "-CommandWithArgs", "Invoke-Command -ScriptBlock ([ScriptBlock]::Create((Get-Content $args)))"]
 

@@ -1,0 +1,19 @@
+$vars = @{
+  'EDITOR' = '{{ .env.EDITOR }}'
+  'VISUAL' = '{{ .env.EDITOR }}'
+  'GIT_EDITOR' = '{{ .env.EDITOR }}'
+  'SHELL' = 'pwsh'
+  'MY_SHELL' = 'pwsh'
+  'HOME' = "$env:USERPROFILE"
+  'NOTES' = "$(Resolve-Path {{ .env.NOTES }})"
+  'VAULT' = "$(Resolve-Path {{ .env.VAULT }})"
+  'XDG_CONFIG_HOME' = "$env:USERPROFILE\.config"
+  'XDG_DATA_HOME' = "$env:USERPROFILE\.local\share"
+}
+
+foreach ($name in $vars.keys) {
+	$value = $vars[$name]
+	
+	Write-Output "Setting $name to $value"
+	[Environment]::SetEnvironmentVariable("$name", "$value", [System.EnvironmentVariableTarget]::User)
+}
