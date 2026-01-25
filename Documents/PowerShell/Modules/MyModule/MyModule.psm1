@@ -362,5 +362,3 @@ function toPdfsHere {
 # Move-Item -Path "$($_.FullName)" -Destination "$($_.DirectoryName)\_$($_.Name)"
 }
 
-Set-Alias to150dpi Optimize-PdfSize
-

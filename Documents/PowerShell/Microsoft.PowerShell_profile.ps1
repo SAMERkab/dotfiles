@@ -6,8 +6,13 @@ $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 
 $env:MY_MODULE = "$(Split-Path $PROFILE)\Modules\MyModule\MyModule.psm1"
 
-Set-Alias less "C:\Program Files\Git\usr\bin\less.exe"
+$env:PATHEXT += ';.SH'
+
 Set-Alias edit $env:EDITOR
+Set-Alias to150dpi Optimize-PdfSize
+Set-Alias sh 'C:\Program Files\Git\bin\sh.exe'
+Set-Alias gitbash 'C:\Program Files\Git\bin\sh.exe'
+Set-Alias less "C:\Program Files\Git\usr\bin\less.exe"
 
 Set-PSReadLineOption -EditMode Vi
 Set-PSReadLineKeyHandler -Chord Alt+e -Function ViEditVisually
