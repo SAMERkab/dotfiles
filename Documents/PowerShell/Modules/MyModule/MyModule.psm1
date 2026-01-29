@@ -64,67 +64,6 @@ function git-status-all {
   }
 }
 
-function generate-filename($path, $default_date, $default_title, $default_price, $default_tags, $ext) {
-  $data = rga -r '$1' --json --max-count 1 "^Page \d+:\s*([0-9.,]+) Euro\s*$" $path
-
-  $price = $data | yq -p json 'select(.type == "match") | .data.submatches[0].replacement.text' | wsl tr -d '.' | wsl tr ',' '.'
-  if ($price) {
-    $price = "€$price"
-  } else {
-    $price = $default_price
-    $tags += ' noocr'
-  }
-
-  if ($default_date) {
-    $date = $default_date
-  } else {
-    $date = wsl date +%F
-  }
-
-  if ($env:TITLE_REGEX) {
-    $title = rga -r '$1' --only-matching --max-count 1 $env:TITLE_REGEX $path
-  } else {
-    $title = $default_title
-  }
-
-  $tags += " $default_tags"
-
-  $date = (Get-Item $path).BaseName
-  echo "$date $title $price --$tags$ext"
-}
-
-function generate-filename-swd($path, $default_date, $default_title, $default_price, $default_tags, $ext) {
-  $price_data = rga -r '$1' --json --max-count 1 "^Page \d+:\s*([0-9.,]+) Euro inkl. Umsatzsteuer\s*$" $path
-
-  $price = $price_data | yq -p json 'select(.type == "match") | .data.submatches[0].replacement.text' | wsl tr -d '.' | wsl tr ',' '.'
-  if ($price) {
-    $price = "€$price"
-  } else {
-    $price = $default_price
-    $tags += ' noocr'
-  }
-
-  $date_data = rga -r '$3-$2-$1 $6-$5-$4' --json --max-count 1 "(\d\d).(\d\d).(\d\d\d\d) bis (\d\d).(\d\d).(\d\d\d\d)" $path
-  $date = $date_data | yq -p json 'select(.type == "match") | .data.submatches[0].replacement.text'
-  if ($date) {
-
-  } elseif ($default_date) {
-    $date = $default_date
-  } else {
-    $date = wsl date +%F
-  }
-
-  if ($env:TITLE_REGEX) {
-    $title = rga -r '$1' --only-matching --max-count 1 $env:TITLE_REGEX $path
-  } else {
-    $title = $default_title
-  }
-
-  $tags += " $default_tags"
-
-  echo "$date $title $price --$tags$ext"
-}
-
 function Search-History {
   cat "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" | fzf
 }
